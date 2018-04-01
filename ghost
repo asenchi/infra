@@ -1,0 +1,10 @@
+[dbservers]
+pg-xray.asenchi.systems
+pg-yankee.asenchi.systems
+pg-zulu.asenchi.systems
+
+[gameservers]
+gaming.asenchi.systems
+
+[builders]
+builder.asenchi.systems

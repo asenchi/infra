@@ -1,0 +1,31 @@
+---
+- name: update apt cache
+  apt:
+    update_cache: True
+    cache_valid_time: 3600
+
+- name: install packages
+  apt:
+    name: "{{ item.package }}"
+    state: present
+  with_items:
+    - {package: "vim"}
+    - {package: "jq"}
+    - {package: "apt-transport-https"}
+    - {package: "curl"}
+    - {package: "ca-certificates"}
+
+- name: install openntpd
+  apt:
+    name: openntpd
+    state: present
+  tags: openntpd
+
+- name: configure openntpd
+  template: src=ntpd.conf.j2 dest=/etc/openntpd/ntpd.conf
+  tags: openntpd
+  notify: restart openntpd
+
+- name: start openntpd
+  service: name=openntpd state=started enabled=yes
+  tags: openntpd

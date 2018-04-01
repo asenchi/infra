@@ -1,0 +1,44 @@
+---
+# Every guide mentions this, lets add it to make sure we don't actually have
+# something pulling this old stuff in
+- name: remove previous docker install
+  apt:
+    name: "{{ item.package }}"
+    state: absent
+  with_items:
+    - {package: "docker.io"}
+    - {package: "docker-engine"}
+    - {package: "containerd"}
+
+- name: install prereqs
+  apt:
+    name: "{{ item.package }}"
+    state: present
+  with_items:
+		- {package: "apt-transport-https"}
+		- {package: "ca-certificates"}
+		- {package: "curl"}
+		- {package: "software-properties-common"}
+
+- name: import docker repo gpg key
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: add docker repo
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/debian stretch stable"
+    state: present
+    filename: 'docker-ce'
+
+- name: install docker
+  apt:
+    name: docker-ce
+    state: present
+    update_cache: yes
+
+- name: enable docker on startup
+  service:
+    name: docker
+    state: started
+    enabled: yes
